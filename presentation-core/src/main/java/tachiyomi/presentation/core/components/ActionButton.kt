@@ -12,8 +12,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
-import tachiyomi.presentation.core.components.material.padding
 import tachiyomi.presentation.core.components.material.Surface
+import tachiyomi.presentation.core.components.material.padding
 
 @Composable
 fun ActionButton(
