@@ -43,7 +43,6 @@ import tachiyomi.presentation.core.util.animateElevation
 import androidx.compose.material3.ButtonDefaults as M3ButtonDefaults
 
 // M3 Expressive: konstanta alpha untuk disabled state
-private const val DISABLED_ALPHA = 0.38f
 
 /**
  * TextButton dengan M3 Expressive style.
