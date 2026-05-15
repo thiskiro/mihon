@@ -104,7 +104,9 @@ fun DuplicateMangaDialog(
         ) {
             Text(
                 text = stringResource(MR.strings.possible_duplicates_title),
+                // M3 Expressive: headlineMedium untuk dialog title
                 style = MaterialTheme.typography.headlineMedium,
+                color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier
                     .then(horizontalPaddingModifier)
                     .padding(top = MaterialTheme.padding.small),
@@ -113,6 +115,7 @@ fun DuplicateMangaDialog(
             Text(
                 text = stringResource(MR.strings.possible_duplicates_summary),
                 style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.then(horizontalPaddingModifier),
             )
 
@@ -149,6 +152,7 @@ fun DuplicateMangaDialog(
                 )
             }
 
+            // M3 Expressive: OutlinedButton dengan extraLarge shape
             OutlinedButton(
                 onClick = onDismissRequest,
                 modifier = Modifier
@@ -156,6 +160,7 @@ fun DuplicateMangaDialog(
                     .padding(bottom = MaterialTheme.padding.medium)
                     .heightIn(min = minHeight)
                     .fillMaxWidth(),
+                shape = MaterialTheme.shapes.extraLarge,
             ) {
                 Text(
                     modifier = Modifier.padding(vertical = MaterialTheme.padding.extraSmall),
@@ -181,226 +186,151 @@ private fun DuplicateMangaListItem(
     Column(
         modifier = Modifier
             .width(MangaCardWidth)
-            .clip(MaterialTheme.shapes.medium)
-            .background(MaterialTheme.colorScheme.surface)
+            // M3 Expressive: extraLarge shape untuk card manga
+            .clip(MaterialTheme.shapes.extraLarge)
+            .background(MaterialTheme.colorScheme.surfaceContainerHigh)
             .combinedClickable(
                 onLongClick = { onOpenManga() },
                 onClick = {
                     onDismissRequest()
                     onMigrate()
                 },
-            )
-            .padding(MaterialTheme.padding.small),
+            ),
     ) {
-        Box {
-            MangaCover.Book(
-                data = ImageRequest.Builder(LocalContext.current)
-                    .data(manga)
-                    .crossfade(true)
-                    .build(),
-                modifier = Modifier.fillMaxWidth(),
-            )
-            BadgeGroup(
-                modifier = Modifier
-                    .padding(4.dp)
-                    .align(Alignment.TopStart),
-            ) {
-                Badge(
-                    color = MaterialTheme.colorScheme.secondary,
-                    textColor = MaterialTheme.colorScheme.onSecondary,
-                    text = pluralStringResource(
-                        MR.plurals.manga_num_chapters,
-                        duplicate.chapterCount.toInt(),
-                        duplicate.chapterCount,
-                    ),
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(MaterialTheme.padding.extraSmall))
-
-        Text(
-            text = manga.title,
-            style = MaterialTheme.typography.titleSmall,
-            overflow = TextOverflow.Ellipsis,
-            maxLines = 2,
+        MangaCover.Book(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(MaterialTheme.shapes.extraLarge),
+            data = ImageRequest.Builder(LocalContext.current)
+                .data(manga)
+                .crossfade(true)
+                .build(),
         )
 
-        if (!manga.author.isNullOrBlank()) {
-            MangaDetailRow(
-                text = manga.author!!,
-                iconImageVector = Icons.Filled.PersonOutline,
-                maxLines = 2,
-            )
-        }
-
-        if (!manga.artist.isNullOrBlank() && manga.author != manga.artist) {
-            MangaDetailRow(
-                text = manga.artist!!,
-                iconImageVector = Icons.Filled.Brush,
-                maxLines = 2,
-            )
-        }
-
-        MangaDetailRow(
-            text = when (manga.status) {
-                SManga.ONGOING.toLong() -> stringResource(MR.strings.ongoing)
-                SManga.COMPLETED.toLong() -> stringResource(MR.strings.completed)
-                SManga.LICENSED.toLong() -> stringResource(MR.strings.licensed)
-                SManga.PUBLISHING_FINISHED.toLong() -> stringResource(MR.strings.publishing_finished)
-                SManga.CANCELLED.toLong() -> stringResource(MR.strings.cancelled)
-                SManga.ON_HIATUS.toLong() -> stringResource(MR.strings.on_hiatus)
-                else -> stringResource(MR.strings.unknown)
-            },
-            iconImageVector = when (manga.status) {
-                SManga.ONGOING.toLong() -> Icons.Outlined.Schedule
-                SManga.COMPLETED.toLong() -> Icons.Outlined.DoneAll
-                SManga.LICENSED.toLong() -> Icons.Outlined.AttachMoney
-                SManga.PUBLISHING_FINISHED.toLong() -> Icons.Outlined.Done
-                SManga.CANCELLED.toLong() -> Icons.Outlined.Close
-                SManga.ON_HIATUS.toLong() -> Icons.Outlined.Pause
-                else -> Icons.Outlined.Block
-            },
-        )
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center,
+        Column(
+            modifier = Modifier.padding(MaterialTheme.padding.small),
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.padding.extraSmall),
         ) {
-            if (source is StubSource) {
-                Icon(
-                    imageVector = Icons.Filled.Warning,
-                    contentDescription = null,
-                    modifier = Modifier.size(16.dp),
-                    tint = MaterialTheme.colorScheme.error,
-                )
-            }
             Text(
-                text = source.name,
-                style = MaterialTheme.typography.labelSmall,
+                text = manga.title,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
-                maxLines = 1,
             )
+
+            val badgeInfo = getMangaBadges(duplicate, source)
+            badgeInfo.forEach { (icon, text) ->
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.padding.extraSmall),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        modifier = Modifier.size(12.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Text(
+                        text = text,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
+            }
+
+            BadgeGroup {
+                duplicate.chapterCount?.let {
+                    Badge(
+                        text = pluralStringResource(MR.plurals.num_chapters, count = it.toInt(), it.toInt()),
+                    )
+                }
+            }
         }
     }
 }
 
-@Composable
-private fun MangaDetailRow(
-    text: String,
-    iconImageVector: ImageVector,
-    maxLines: Int = 1,
-) {
-    Row(
-        modifier = Modifier
-            .secondaryItemAlpha()
-            .padding(top = MaterialTheme.padding.extraSmall),
-        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.padding.extraSmall),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Icon(
-            imageVector = iconImageVector,
-            contentDescription = null,
-            modifier = Modifier.size(MangaDetailsIconWidth),
-        )
-        Text(
-            text = text,
-            style = MaterialTheme.typography.bodySmall,
-            overflow = TextOverflow.Ellipsis,
-            maxLines = maxLines,
-        )
-    }
-}
+private data class BadgeInfo(val icon: ImageVector, val text: String)
 
 @Composable
-private fun getMaximumMangaCardHeight(duplicates: List<MangaWithChapterCount>): Dp {
-    val density = LocalDensity.current
-    val typography = MaterialTheme.typography
-    val textMeasurer = rememberTextMeasurer()
+private fun getMangaBadges(duplicate: MangaWithChapterCount, source: Source): List<BadgeInfo> {
+    val manga = duplicate.manga
+    val badges = mutableListOf<BadgeInfo>()
 
-    val smallPadding = with(density) { MaterialTheme.padding.small.roundToPx() }
-    val extraSmallPadding = with(density) { MaterialTheme.padding.extraSmall.roundToPx() }
-
-    val width = with(density) { MangaCardWidth.roundToPx() - (2 * smallPadding) }
-    val iconWidth = with(density) { MangaDetailsIconWidth.roundToPx() }
-
-    val coverHeight = width / MangaCover.Book.ratio
-    val constraints = Constraints(maxWidth = width)
-    val detailsConstraints = Constraints(maxWidth = width - iconWidth - extraSmallPadding)
-
-    return remember(
-        duplicates,
-        density,
-        typography,
-        textMeasurer,
-        smallPadding,
-        extraSmallPadding,
-        coverHeight,
-        constraints,
-        detailsConstraints,
-    ) {
-        duplicates.fastMaxOfOrNull {
-            calculateMangaCardHeight(
-                manga = it.manga,
-                density = density,
-                typography = typography,
-                textMeasurer = textMeasurer,
-                smallPadding = smallPadding,
-                extraSmallPadding = extraSmallPadding,
-                coverHeight = coverHeight,
-                constraints = constraints,
-                detailsConstraints = detailsConstraints,
-            )
-        }
-            ?: 0.dp
+    val statusIcon = when (manga.status.toInt()) {
+        SManga.ONGOING -> Icons.Outlined.Schedule
+        SManga.COMPLETED -> Icons.Outlined.Done
+        SManga.LICENSED -> Icons.Outlined.AttachMoney
+        SManga.PUBLISHING_FINISHED -> Icons.Outlined.DoneAll
+        SManga.CANCELLED -> Icons.Outlined.Close
+        SManga.ON_HIATUS -> Icons.Outlined.Pause
+        else -> Icons.Filled.Warning
     }
+
+    val statusText = when (manga.status.toInt()) {
+        SManga.ONGOING -> stringResource(MR.strings.ongoing)
+        SManga.COMPLETED -> stringResource(MR.strings.completed)
+        SManga.LICENSED -> stringResource(MR.strings.licensed)
+        SManga.PUBLISHING_FINISHED -> stringResource(MR.strings.publishing_finished)
+        SManga.CANCELLED -> stringResource(MR.strings.cancelled)
+        SManga.ON_HIATUS -> stringResource(MR.strings.on_hiatus)
+        else -> stringResource(MR.strings.unknown)
+    }
+    badges.add(BadgeInfo(statusIcon, statusText))
+
+    manga.author?.let {
+        badges.add(BadgeInfo(Icons.Filled.PersonOutline, it))
+    }
+    manga.artist?.takeIf { it != manga.author }?.let {
+        badges.add(BadgeInfo(Icons.Filled.Brush, it))
+    }
+
+    if (source !is StubSource) {
+        badges.add(BadgeInfo(Icons.Outlined.Block, source.name))
+    }
+
+    return badges
 }
-
-private fun calculateMangaCardHeight(
-    manga: Manga,
-    density: Density,
-    typography: Typography,
-    textMeasurer: TextMeasurer,
-    smallPadding: Int,
-    extraSmallPadding: Int,
-    coverHeight: Float,
-    constraints: Constraints,
-    detailsConstraints: Constraints,
-): Dp {
-    val titleHeight = textMeasurer.measureHeight(manga.title, typography.titleSmall, 2, constraints)
-    val authorHeight = if (!manga.author.isNullOrBlank()) {
-        textMeasurer.measureHeight(manga.author!!, typography.bodySmall, 2, detailsConstraints)
-    } else {
-        0
-    }
-    val artistHeight = if (!manga.artist.isNullOrBlank() && manga.author != manga.artist) {
-        textMeasurer.measureHeight(manga.artist!!, typography.bodySmall, 2, detailsConstraints)
-    } else {
-        0
-    }
-    val statusHeight = textMeasurer.measureHeight("", typography.bodySmall, 2, detailsConstraints)
-    val sourceHeight = textMeasurer.measureHeight("", typography.labelSmall, 1, constraints)
-
-    val totalHeight = coverHeight + titleHeight + authorHeight + artistHeight + statusHeight + sourceHeight
-    return with(density) { ((2 * smallPadding) + totalHeight + (5 * extraSmallPadding)).toDp() }
-}
-
-private fun TextMeasurer.measureHeight(
-    text: String,
-    style: TextStyle,
-    maxLines: Int,
-    constraints: Constraints,
-): Int = measure(
-    text = text,
-    style = style,
-    overflow = TextOverflow.Ellipsis,
-    maxLines = maxLines,
-    constraints = constraints,
-)
-    .size
-    .height
 
 private val MangaCardWidth = 150.dp
-private val MangaDetailsIconWidth = 16.dp
+
+@Composable
+private fun getMaximumMangaCardHeight(
+    duplicates: List<MangaWithChapterCount>,
+): Dp {
+    val textMeasurer = rememberTextMeasurer()
+    val density = LocalDensity.current
+    val typography = MaterialTheme.typography
+
+    return with(density) {
+        val coverHeight = (MangaCardWidth * MangaCover.Book.ratio).toPx()
+        val badgeHeight = with(textMeasurer) {
+            measure(text = " ", style = typography.labelSmall).size.height.toFloat()
+        }
+        val titleHeight = duplicates.fastMaxOfOrNull {
+            measureMangaTitle(it.manga.title, textMeasurer, typography, density)
+        } ?: 0f
+
+        (coverHeight + titleHeight + badgeHeight * 4 + 48).toDp()
+    }
+}
+
+private fun measureMangaTitle(
+    title: String,
+    textMeasurer: TextMeasurer,
+    typography: Typography,
+    density: Density,
+): Float {
+    val constraints = with(density) {
+        Constraints(maxWidth = MangaCardWidth.toPx().toInt())
+    }
+    return textMeasurer.measure(
+        text = title,
+        style = typography.labelMedium,
+        maxLines = 2,
+        overflow = TextOverflow.Ellipsis,
+        constraints = constraints,
+    ).size.height.toFloat()
+}

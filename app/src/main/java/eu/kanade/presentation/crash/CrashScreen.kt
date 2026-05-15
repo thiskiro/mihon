@@ -46,15 +46,17 @@ fun CrashScreen(
         Box(
             modifier = Modifier
                 .padding(vertical = MaterialTheme.padding.small)
-                .clip(MaterialTheme.shapes.small)
+                // M3 Expressive: extraLarge shape konsisten
+                .clip(MaterialTheme.shapes.extraLarge)
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.surfaceVariant),
+                // M3 Expressive: errorContainer lebih sesuai untuk crash log
+                .background(MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.3f)),
         ) {
             Text(
                 text = exception.toString(),
-                modifier = Modifier
-                    .padding(all = MaterialTheme.padding.small),
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(all = MaterialTheme.padding.medium),
+                color = MaterialTheme.colorScheme.onErrorContainer,
+                style = MaterialTheme.typography.bodySmall,
             )
         }
     }
