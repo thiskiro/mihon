@@ -244,7 +244,7 @@ private fun DuplicateMangaListItem(
             BadgeGroup {
                 duplicate.chapterCount?.let {
                     Badge(
-                        text = pluralStringResource(MR.plurals.num_chapters, count = it.toInt(), it.toInt()),
+                        text = pluralStringResource(MR.plurals.manga_num_chapters, count = it.toInt(), it.toInt()),
                     )
                 }
             }
