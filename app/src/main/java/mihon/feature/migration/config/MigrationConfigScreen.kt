@@ -33,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
@@ -206,7 +207,8 @@ class MigrationConfigScreen(private val mangaIds: Collection<Long>) : Screen() {
                 supportingContent = source.lang.takeIf { it.isNotEmpty() }?.let {
                     {
                         Text(
-                            text = LocaleHelper.getSourceDisplayName(it, null),
+                            val context = LocalContext.current
+                        text = LocaleHelper.getSourceDisplayName(it, context),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
@@ -222,7 +224,7 @@ class MigrationConfigScreen(private val mangaIds: Collection<Long>) : Screen() {
                     ) {
                         if (enabled) {
                             Pill(
-                                text = stringResource(MR.strings.action_selected),
+                                text = stringResource(MR.strings.selected),
                                 color = MaterialTheme.colorScheme.primaryContainer,
                                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                             )
