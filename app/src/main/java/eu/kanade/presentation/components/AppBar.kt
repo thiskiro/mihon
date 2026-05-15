@@ -1,5 +1,7 @@
 package eu.kanade.presentation.components
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
@@ -14,8 +16,10 @@ import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PlainTooltip
@@ -28,7 +32,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTooltipState
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -61,6 +64,7 @@ import tachiyomi.presentation.core.util.showSoftKeyboard
 
 const val SEARCH_DEBOUNCE_MILLIS = 250L
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppBar(
     title: String?,
@@ -110,6 +114,7 @@ fun AppBar(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppBar(
     // Title
@@ -128,13 +133,28 @@ fun AppBar(
 
     scrollBehavior: TopAppBarScrollBehavior? = null,
 ) {
-    Column(
-        modifier = modifier,
-    ) {
+    // M3 Expressive: animasikan warna container saat action mode aktif
+    val containerColor by animateColorAsState(
+        targetValue = when {
+            backgroundColor != null -> backgroundColor
+            isActionMode -> MaterialTheme.colorScheme.secondaryContainer
+            else -> MaterialTheme.colorScheme.surface
+        },
+        animationSpec = spring(),
+        label = "appBarColor",
+    )
+
+    Column(modifier = modifier) {
         TopAppBar(
             navigationIcon = {
                 if (isActionMode) {
-                    IconButton(onClick = onCancelActionMode) {
+                    // M3 Expressive: IconButton dengan filled tonal style saat action mode
+                    IconButton(
+                        onClick = onCancelActionMode,
+                        colors = IconButtonDefaults.iconButtonColors(
+                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                        ),
+                    ) {
                         Icon(
                             imageVector = Icons.Outlined.Close,
                             contentDescription = stringResource(MR.strings.action_cancel),
@@ -151,9 +171,18 @@ fun AppBar(
             title = titleContent,
             actions = actions,
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = backgroundColor ?: MaterialTheme.colorScheme.surfaceColorAtElevation(
-                    elevation = if (isActionMode) 3.dp else 0.dp,
-                ),
+                containerColor = containerColor,
+                scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                titleContentColor = if (isActionMode) {
+                    MaterialTheme.colorScheme.onSecondaryContainer
+                } else {
+                    MaterialTheme.colorScheme.onSurface
+                },
+                actionIconContentColor = if (isActionMode) {
+                    MaterialTheme.colorScheme.onSecondaryContainer
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                },
             ),
             scrollBehavior = scrollBehavior,
         )
@@ -170,6 +199,9 @@ fun AppBarTitle(
         title?.let {
             Text(
                 text = it,
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontWeight = FontWeight.SemiBold,
+                ),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
@@ -177,7 +209,9 @@ fun AppBarTitle(
         subtitle?.let {
             Text(
                 text = it,
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                ),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.basicMarquee(
@@ -188,6 +222,7 @@ fun AppBarTitle(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppBarActions(
     actions: ImmutableList<AppBar.AppBarAction>,
@@ -205,6 +240,7 @@ fun AppBarActions(
             state = rememberTooltipState(),
             focusable = false,
         ) {
+            // M3 Expressive: IconButton lebih expressive dengan tint yang dinamis
             IconButton(
                 onClick = it.onClick,
                 enabled = it.enabled,
@@ -262,6 +298,7 @@ fun AppBarActions(
  * @param searchQuery If null, use normal toolbar.
  * @param placeholderText If null, [MR.strings.action_search_hint] is used.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchToolbar(
     searchQuery: String?,
@@ -305,15 +342,15 @@ fun SearchToolbar(
                     .runOnEnterKeyPressed(action = searchAndClearFocus)
                     .showSoftKeyboard(remember { searchQuery.isEmpty() })
                     .clearFocusOnSoftKeyboardHide(),
-                textStyle = MaterialTheme.typography.titleMedium.copy(
-                    color = MaterialTheme.colorScheme.onBackground,
+                textStyle = MaterialTheme.typography.bodyLarge.copy(
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.Normal,
                     fontSize = 18.sp,
                 ),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(onSearch = { searchAndClearFocus() }),
                 singleLine = true,
-                cursorBrush = SolidColor(MaterialTheme.colorScheme.onBackground),
+                cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                 visualTransformation = visualTransformation,
                 interactionSource = interactionSource,
                 decorationBox = { innerTextField ->
@@ -330,7 +367,7 @@ fun SearchToolbar(
                                 text = (placeholderText ?: stringResource(MR.strings.action_search_hint)),
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
-                                style = MaterialTheme.typography.titleMedium.copy(
+                                style = MaterialTheme.typography.bodyLarge.copy(
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.Normal,
                                 ),
@@ -359,9 +396,7 @@ fun SearchToolbar(
                         state = rememberTooltipState(),
                         focusable = false,
                     ) {
-                        IconButton(
-                            onClick = onClick,
-                        ) {
+                        IconButton(onClick = onClick) {
                             Icon(
                                 Icons.Outlined.Search,
                                 contentDescription = stringResource(MR.strings.action_search),
