@@ -204,11 +204,11 @@ class MigrationConfigScreen(private val mangaIds: Collection<Long>) : Screen() {
                         style = MaterialTheme.typography.bodyLarge,
                     )
                 },
-                supportingContent = source.lang.takeIf { it.isNotEmpty() }?.let {
+                supportingContent = source.lang.takeIf { it.isNotEmpty() }?.let { lang ->
                     {
+                        val context = LocalContext.current
                         Text(
-                            val context = LocalContext.current
-                        text = LocaleHelper.getSourceDisplayName(it, context),
+                            text = LocaleHelper.getSourceDisplayName(lang, context),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
