@@ -13,6 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 /**
+ * M3 Expressive Pull to Refresh
+ *
  * @param refreshing Whether the layout is currently refreshing
  * @param onRefresh Lambda which is invoked when a swipe to refresh gesture is completed.
  * @param enabled Whether the the layout should react to swipe gestures or not.
@@ -40,14 +42,15 @@ fun PullRefresh(
     ) {
         content()
 
+        // M3 Expressive: gunakan primaryContainer/onPrimaryContainer untuk indikator
         PullToRefreshDefaults.Indicator(
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .padding(indicatorPadding),
             isRefreshing = refreshing,
             state = state,
-            containerColor = MaterialTheme.colorScheme.surfaceVariant,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
         )
     }
 }

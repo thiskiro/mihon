@@ -12,7 +12,8 @@ import tachiyomi.presentation.core.components.Pill
 
 @Composable
 fun TabText(text: String, badgeCount: Int? = null) {
-    val pillAlpha = if (isSystemInDarkTheme()) 0.12f else 0.08f
+    // M3 Expressive: warna pill lebih kontras dan expressive
+    val pillAlpha = if (isSystemInDarkTheme()) 0.16f else 0.12f
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -23,9 +24,10 @@ fun TabText(text: String, badgeCount: Int? = null) {
             overflow = TextOverflow.Ellipsis,
         )
         if (badgeCount != null) {
+            // M3 Expressive: pakai secondaryContainer untuk badge tab
             Pill(
                 text = "$badgeCount",
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = pillAlpha),
+                color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = pillAlpha),
                 fontSize = 10.sp,
             )
         }
