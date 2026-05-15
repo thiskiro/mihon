@@ -22,6 +22,7 @@ import androidx.compose.material.icons.rounded.CheckBox
 import androidx.compose.material.icons.rounded.CheckBoxOutlineBlank
 import androidx.compose.material.icons.rounded.DisabledByDefault
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -29,7 +30,9 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.darkColorScheme
@@ -42,6 +45,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -75,6 +79,7 @@ fun HeadingItem(labelRes: StringResource) {
 fun HeadingItem(text: String) {
     Text(
         text = text,
+        // M3 Expressive: pakai header typography yang sudah diupdate
         style = MaterialTheme.typography.header,
         modifier = Modifier
             .fillMaxWidth()
@@ -152,6 +157,12 @@ fun CheckboxItem(label: String, checked: Boolean, onClick: () -> Unit) {
             Checkbox(
                 checked = checked,
                 onCheckedChange = null,
+                // M3 Expressive: warna checkbox eksplisit
+                colors = CheckboxDefaults.colors(
+                    checkedColor = MaterialTheme.colorScheme.primary,
+                    uncheckedColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    checkmarkColor = MaterialTheme.colorScheme.onPrimary,
+                ),
             )
         },
         onClick = onClick,
@@ -166,6 +177,11 @@ fun RadioItem(label: String, selected: Boolean, onClick: () -> Unit) {
             RadioButton(
                 selected = selected,
                 onClick = null,
+                // M3 Expressive: warna radio button eksplisit
+                colors = RadioButtonDefaults.colors(
+                    selectedColor = MaterialTheme.colorScheme.primary,
+                    unselectedColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                ),
             )
         },
         onClick = onClick,
@@ -181,7 +197,8 @@ fun SliderItem(
     steps: Int = with(valueRange) { (last - first) - 1 },
     valueString: String = value.toString(),
     labelStyle: TextStyle = MaterialTheme.typography.bodyMedium,
-    pillColor: Color = MaterialTheme.colorScheme.surfaceContainerHigh,
+    // M3 Expressive: default pill color pakai secondaryContainer
+    pillColor: Color = MaterialTheme.colorScheme.secondaryContainer,
 ) {
     BaseSliderItem(
         value = value,
@@ -211,7 +228,7 @@ fun BaseSliderItem(
     valueString: String = value.toString(),
     titleStyle: TextStyle = MaterialTheme.typography.titleLarge,
     subtitleStyle: TextStyle = MaterialTheme.typography.bodySmall,
-    pillColor: Color = MaterialTheme.colorScheme.surfaceContainerHigh,
+    pillColor: Color = MaterialTheme.colorScheme.secondaryContainer,
 ) {
     val haptic = LocalHapticFeedback.current
     Column(
@@ -304,11 +321,16 @@ fun SelectItem(
             readOnly = true,
             singleLine = true,
             trailingIcon = {
-                ExposedDropdownMenuDefaults.TrailingIcon(
-                    expanded = expanded,
-                )
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
             },
-            colors = ExposedDropdownMenuDefaults.textFieldColors(),
+            // M3 Expressive: warna outline lebih expressive
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                focusedLabelColor = MaterialTheme.colorScheme.primary,
+            ),
+            // M3 Expressive: shape lebih rounded
+            shape = MaterialTheme.shapes.medium,
         )
 
         ExposedDropdownMenu(
@@ -339,6 +361,8 @@ fun TriStateItem(
 ) {
     Row(
         modifier = Modifier
+            // M3 Expressive: clip dengan medium shape
+            .clip(MaterialTheme.shapes.medium)
             .clickable(
                 enabled = enabled && onClick != null,
                 onClick = {
@@ -378,7 +402,8 @@ fun TriStateItem(
         Text(
             text = label,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = stateAlpha),
-            style = MaterialTheme.typography.bodyMedium,
+            // M3 Expressive: bodyLarge lebih readable
+            style = MaterialTheme.typography.bodyLarge,
         )
     }
 }
@@ -393,6 +418,13 @@ fun TextItem(label: String, value: String, onChange: (String) -> Unit) {
         value = value,
         onValueChange = onChange,
         singleLine = true,
+        // M3 Expressive: shape lebih rounded
+        shape = MaterialTheme.shapes.medium,
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+            focusedLabelColor = MaterialTheme.colorScheme.primary,
+        ),
     )
 }
 
@@ -439,6 +471,8 @@ private fun BaseSettingsItem(
 ) {
     Row(
         modifier = Modifier
+            // M3 Expressive: clip dengan medium shape untuk ripple yang lebih baik
+            .clip(MaterialTheme.shapes.medium)
             .clickable(onClick = onClick)
             .fillMaxWidth()
             .padding(
@@ -451,7 +485,9 @@ private fun BaseSettingsItem(
         widget(this)
         Text(
             text = label,
-            style = MaterialTheme.typography.bodyMedium,
+            // M3 Expressive: bodyLarge lebih readable
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurface,
         )
     }
 }
