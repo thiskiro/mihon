@@ -166,8 +166,8 @@ class MigrationConfigScreen(private val mangaIds: Collection<Long>) : Screen() {
 
                             if (index < state.sources.lastIndex) {
                                 HorizontalDivider(
-                                modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
-                            )
+                                    modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
+                                )
                             }
                         }
                     }
