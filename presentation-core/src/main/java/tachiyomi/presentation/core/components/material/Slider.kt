@@ -2,6 +2,7 @@ package tachiyomi.presentation.core.components.material
 
 import androidx.annotation.IntRange
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderColors
 import androidx.compose.material3.SliderDefaults
@@ -20,7 +21,14 @@ fun Slider(
     valueRange: IntProgression = 0..1,
     @IntRange(from = 0) steps: Int = with(valueRange) { (last - first) - 1 },
     onValueChangeFinished: (() -> Unit)? = null,
-    colors: SliderColors = SliderDefaults.colors(),
+    // M3 Expressive: warna slider lebih expressive
+    colors: SliderColors = SliderDefaults.colors(
+        thumbColor = MaterialTheme.colorScheme.primary,
+        activeTrackColor = MaterialTheme.colorScheme.primary,
+        activeTickColor = MaterialTheme.colorScheme.onPrimary,
+        inactiveTrackColor = MaterialTheme.colorScheme.secondaryContainer,
+        inactiveTickColor = MaterialTheme.colorScheme.onSecondaryContainer,
+    ),
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     thumb: @Composable (SliderState) -> Unit = {
         SliderDefaults.Thumb(
@@ -30,7 +38,11 @@ fun Slider(
         )
     },
     track: @Composable (SliderState) -> Unit = { sliderState ->
-        SliderDefaults.Track(colors = colors, enabled = enabled, sliderState = sliderState)
+        SliderDefaults.Track(
+            colors = colors,
+            enabled = enabled,
+            sliderState = sliderState,
+        )
     },
 ) {
     Slider(

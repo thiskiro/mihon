@@ -2,16 +2,18 @@ package tachiyomi.presentation.core.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import tachiyomi.presentation.core.components.material.padding
+import tachiyomi.presentation.core.components.material.Surface
 
 @Composable
 fun ActionButton(
@@ -20,11 +22,20 @@ fun ActionButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    TextButton(
-        modifier = modifier,
+    // M3 Expressive: Surface clickable dengan shape extraLarge
+    Surface(
         onClick = onClick,
+        modifier = modifier,
+        shape = MaterialTheme.shapes.extraLarge,
+        color = MaterialTheme.colorScheme.secondaryContainer,
+        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+        tonalElevation = MaterialTheme.padding.extraSmall,
     ) {
         Column(
+            modifier = Modifier.padding(
+                horizontal = MaterialTheme.padding.medium,
+                vertical = MaterialTheme.padding.small,
+            ),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.padding.extraSmall),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -35,6 +46,7 @@ fun ActionButton(
             Text(
                 text = title,
                 textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.labelMedium,
             )
         }
     }

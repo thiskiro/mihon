@@ -7,13 +7,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import tachiyomi.presentation.core.components.material.Button
+import tachiyomi.presentation.core.components.material.ButtonDefaults
 
 @Composable
 fun LazyColumnWithAction(
@@ -36,16 +37,19 @@ fun LazyColumnWithAction(
 
         HorizontalDivider()
 
+        // M3 Expressive: pakai custom Button dengan extraLarge shape
         Button(
             modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .padding(horizontal = 16.dp, vertical = 12.dp)
                 .fillMaxWidth(),
             enabled = actionEnabled,
             onClick = onClickAction,
+            colors = ButtonDefaults.buttonColors(),
+            contentPadding = ButtonDefaults.expressiveContentPadding,
         ) {
             Text(
                 text = actionLabel,
-                color = MaterialTheme.colorScheme.onPrimary,
+                style = MaterialTheme.typography.labelLarge,
             )
         }
     }
