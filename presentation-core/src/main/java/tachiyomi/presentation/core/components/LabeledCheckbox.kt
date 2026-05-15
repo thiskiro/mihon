@@ -5,7 +5,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,17 +28,16 @@ fun LabeledCheckbox(
 ) {
     Row(
         modifier = modifier
-            .clip(MaterialTheme.shapes.small)
+            // M3 Expressive: medium shape untuk area klik
+            .clip(MaterialTheme.shapes.medium)
             .fillMaxWidth()
-            .heightIn(min = 48.dp)
+            // M3 Expressive: min height 56dp untuk touch target lebih nyaman
+            .heightIn(min = 56.dp)
             .clickable(
                 role = Role.Checkbox,
-                onClick = {
-                    if (enabled) {
-                        onCheckedChange(!checked)
-                    }
-                },
-            ),
+                onClick = { if (enabled) onCheckedChange(!checked) },
+            )
+            .padding(horizontal = MaterialTheme.padding.small),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small),
     ) {
@@ -44,8 +45,24 @@ fun LabeledCheckbox(
             checked = checked,
             onCheckedChange = null,
             enabled = enabled,
+            // M3 Expressive: warna checkbox lebih expressive
+            colors = CheckboxDefaults.colors(
+                checkedColor = MaterialTheme.colorScheme.primary,
+                uncheckedColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                checkmarkColor = MaterialTheme.colorScheme.onPrimary,
+                disabledCheckedColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+                disabledUncheckedColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+            ),
         )
 
-        Text(text = label)
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyLarge,
+            color = if (enabled) {
+                MaterialTheme.colorScheme.onSurface
+            } else {
+                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+            },
+        )
     }
 }

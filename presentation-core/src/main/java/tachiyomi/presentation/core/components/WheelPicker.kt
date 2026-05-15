@@ -145,7 +145,10 @@ private fun <T> WheelPicker(
         if (showManualInput) {
             val value = rememberSaveable(saver = TextFieldState.Saver) {
                 val currentString = items[internalIndex].toString()
-                TextFieldState(initialText = currentString, initialSelection = TextRange(currentString.length))
+                TextFieldState(
+                    initialText = currentString,
+                    initialSelection = TextRange(currentString.length),
+                )
             }
 
             val scope = rememberCoroutineScope()
@@ -179,6 +182,7 @@ private fun <T> WheelPicker(
                         color = MaterialTheme.colorScheme.onSurface,
                         textAlign = TextAlign.Center,
                     ),
+                // M3 Expressive: cursor warna primary
                 cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
             )
         } else {
@@ -253,12 +257,16 @@ private fun calculateSnappedItemIndex(lazyListState: LazyListState): Int {
 object WheelPickerDefaults {
     @Composable
     fun Background(size: DpSize) {
+        // M3 Expressive: background lebih expressive dengan secondaryContainer
         androidx.compose.material3.Surface(
-            modifier = Modifier
-                .size(size.width, size.height / ROW_COUNT),
-            shape = RoundedCornerShape(MaterialTheme.padding.medium),
-            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
+            modifier = Modifier.size(size.width, size.height / ROW_COUNT),
+            // M3 Expressive: extraLarge shape konsisten
+            shape = MaterialTheme.shapes.extraLarge,
+            color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
+            border = BorderStroke(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.secondary,
+            ),
             content = {},
         )
     }
@@ -268,6 +276,7 @@ object WheelPickerDefaults {
         Text(
             text = text,
             style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSurface,
             maxLines = 1,
         )
     }
