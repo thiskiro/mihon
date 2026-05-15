@@ -10,10 +10,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
-import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -54,35 +54,34 @@ class SupportUsScreen : Screen() {
         ) { paddingValues ->
             Column(
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small),
-                modifier = Modifier.verticalScroll(rememberScrollState()).padding(
-                    remember(paddingValues) {
-                        object : PaddingValues {
-                            override fun calculateLeftPadding(layoutDirection: LayoutDirection): Dp {
-                                return paddingValues.calculateLeftPadding(layoutDirection) +
-                                    MaterialTheme.padding.medium
-                            }
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .padding(
+                        remember(paddingValues) {
+                            object : PaddingValues {
+                                override fun calculateLeftPadding(layoutDirection: LayoutDirection): Dp {
+                                    return paddingValues.calculateLeftPadding(layoutDirection) +
+                                        MaterialTheme.padding.medium
+                                }
 
-                            override fun calculateTopPadding(): Dp {
-                                return 0.dp
-                            }
+                                override fun calculateTopPadding(): Dp = 0.dp
 
-                            override fun calculateRightPadding(layoutDirection: LayoutDirection): Dp {
-                                return paddingValues.calculateRightPadding(layoutDirection) +
-                                    MaterialTheme.padding.medium
-                            }
+                                override fun calculateRightPadding(layoutDirection: LayoutDirection): Dp {
+                                    return paddingValues.calculateRightPadding(layoutDirection) +
+                                        MaterialTheme.padding.medium
+                                }
 
-                            override fun calculateBottomPadding(): Dp {
-                                return 0.dp
+                                override fun calculateBottomPadding(): Dp = 0.dp
                             }
-                        }
-                    },
-                ),
+                        },
+                    ),
             ) {
                 Spacer(modifier = Modifier.height(paddingValues.calculateTopPadding()))
 
                 Text(
                     text = stringResource(MR.strings.supportUsScreen_perks),
                     style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
                 )
 
@@ -100,12 +99,14 @@ class SupportUsScreen : Screen() {
                 Text(
                     text = stringResource(MR.strings.supportUsScreen_currentlySupportedBy, 200),
                     style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
                 )
 
                 Text(
                     text = stringResource(MR.strings.supportUsScreen_contactForDetailsMessage),
                     style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(horizontal = MaterialTheme.padding.medium),
                 )
 
@@ -126,7 +127,13 @@ class SupportUsScreen : Screen() {
         title: String,
         onClick: () -> Unit,
     ) {
-        Card {
+        // M3 Expressive: Surface dengan extraLarge shape menggantikan Card
+        Surface(
+            shape = MaterialTheme.shapes.extraLarge,
+            color = MaterialTheme.colorScheme.surfaceContainerHigh,
+            tonalElevation = 1.dp,
+            shadowElevation = 2.dp,
+        ) {
             TextPreferenceWidget(
                 title = title,
                 icon = icon,
@@ -134,6 +141,7 @@ class SupportUsScreen : Screen() {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.OpenInNew,
                         contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
                     )
                 },
                 onPreferenceClick = onClick,
