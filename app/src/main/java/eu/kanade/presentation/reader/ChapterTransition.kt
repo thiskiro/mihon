@@ -14,7 +14,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Warning
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -25,7 +24,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.PlaceholderVerticalAlign
 import androidx.compose.ui.text.buildAnnotatedString
@@ -107,7 +105,6 @@ private fun TransitionText(
                 scanlator = topChapter.scanlator,
                 downloaded = topChapterDownloaded,
             )
-
             Spacer(Modifier.height(VerticalSpacerSize))
         } else {
             NoChapterNotification(
@@ -123,9 +120,7 @@ private fun TransitionText(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                 )
             }
-
             Spacer(Modifier.height(VerticalSpacerSize))
-
             ChapterText(
                 header = bottomLabel,
                 name = bottomChapter.name,
@@ -146,13 +141,18 @@ private fun NoChapterNotification(
     text: String,
     modifier: Modifier = Modifier,
 ) {
+    // M3 Expressive: OutlinedCard dengan shape extraLarge
     OutlinedCard(
         modifier = modifier,
-        colors = CardColor,
+        shape = MaterialTheme.shapes.extraLarge,
+        colors = CardDefaults.outlinedCardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+        ),
+        border = CardDefaults.outlinedCardBorder(),
     ) {
         Row(
-            modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 12.dp),
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -161,7 +161,6 @@ private fun NoChapterNotification(
                 tint = MaterialTheme.colorScheme.primary,
                 contentDescription = null,
             )
-
             Text(
                 text = text,
                 style = MaterialTheme.typography.bodyMedium,
@@ -175,9 +174,14 @@ private fun ChapterGapWarning(
     gapCount: Int,
     modifier: Modifier = Modifier,
 ) {
+    // M3 Expressive: error container untuk warning
     OutlinedCard(
         modifier = modifier,
-        colors = CardColor,
+        shape = MaterialTheme.shapes.extraLarge,
+        colors = CardDefaults.outlinedCardColors(
+            containerColor = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.3f),
+            contentColor = MaterialTheme.colorScheme.onSurface,
+        ),
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
@@ -189,7 +193,6 @@ private fun ChapterGapWarning(
                 tint = MaterialTheme.colorScheme.error,
                 contentDescription = null,
             )
-
             Text(
                 text = pluralStringResource(MR.plurals.missing_chapters_warning, count = gapCount, gapCount),
                 style = MaterialTheme.typography.bodyMedium,
@@ -207,6 +210,7 @@ private fun ChapterHeaderText(
         text = text,
         modifier = modifier,
         style = MaterialTheme.typography.titleMedium,
+        color = MaterialTheme.colorScheme.primary,
     )
 }
 
@@ -246,6 +250,7 @@ private fun ChapterText(
                     Icon(
                         imageVector = Icons.Filled.CheckCircle,
                         contentDescription = stringResource(MR.strings.label_downloaded),
+                        tint = MaterialTheme.colorScheme.primary,
                     )
                 },
             ),
@@ -265,13 +270,6 @@ private fun ChapterText(
     }
 }
 
-private val CardColor: CardColors
-    @Composable
-    get() = CardDefaults.outlinedCardColors(
-        containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.onSurface,
-    )
-
 private val VerticalSpacerSize = 24.dp
 private const val DOWNLOADED_ICON_ID = "downloaded"
 
@@ -283,6 +281,7 @@ private fun previewChapter(name: String, scanlator: String, chapterNumber: Doubl
     scanlator = scanlator,
     chapterNumber = chapterNumber,
 )
+
 private val FakeChapter = previewChapter(
     name = "Vol.1, Ch.1 - Fake Chapter Title",
     scanlator = "Scanlator Name",
@@ -323,7 +322,10 @@ private fun TransitionTextLongTitlePreview() {
     TachiyomiPreviewTheme {
         Surface(modifier = Modifier.padding(48.dp)) {
             ChapterTransition(
-                transition = ChapterTransition.Next(ReaderChapter(FakeChapterLongTitle), ReaderChapter(FakeChapter)),
+                transition = ChapterTransition.Next(
+                    ReaderChapter(FakeChapterLongTitle),
+                    ReaderChapter(FakeChapter),
+                ),
                 currChapterDownloaded = true,
                 goingToChapterDownloaded = true,
             )
