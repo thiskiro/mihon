@@ -1,6 +1,7 @@
 package eu.kanade.presentation.components
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
@@ -22,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.platform.LocalDensity
@@ -34,12 +36,13 @@ import dev.icerock.moko.resources.StringResource
 import tachiyomi.i18n.MR
 import tachiyomi.presentation.core.i18n.stringResource
 
+// M3 Expressive: gunakan container colors untuk banner
 val DownloadedOnlyBannerBackgroundColor
-    @Composable get() = MaterialTheme.colorScheme.tertiary
+    @Composable get() = MaterialTheme.colorScheme.tertiaryContainer
 val IncognitoModeBannerBackgroundColor
-    @Composable get() = MaterialTheme.colorScheme.primary
+    @Composable get() = MaterialTheme.colorScheme.primaryContainer
 val IndexingBannerBackgroundColor
-    @Composable get() = MaterialTheme.colorScheme.secondary
+    @Composable get() = MaterialTheme.colorScheme.secondaryContainer
 
 @Composable
 fun WarningBanner(
@@ -50,9 +53,10 @@ fun WarningBanner(
         text = stringResource(textRes),
         modifier = modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.error)
-            .padding(16.dp),
-        color = MaterialTheme.colorScheme.onError,
+            // M3 Expressive: errorContainer lebih soft dari error murni
+            .background(MaterialTheme.colorScheme.errorContainer)
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        color = MaterialTheme.colorScheme.onErrorContainer,
         style = MaterialTheme.typography.bodyMedium,
         textAlign = TextAlign.Center,
     )
@@ -72,8 +76,8 @@ fun AppStateBanners(
         val indexingPlaceable = subcompose(0) {
             AnimatedVisibility(
                 visible = indexing,
-                enter = expandVertically(),
-                exit = shrinkVertically(),
+                enter = expandVertically(animationSpec = spring()),
+                exit = shrinkVertically(animationSpec = spring()),
             ) {
                 IndexingDownloadBanner(
                     modifier = Modifier.windowInsetsPadding(mainInsets),
@@ -85,8 +89,8 @@ fun AppStateBanners(
         val downloadedOnlyPlaceable = subcompose(1) {
             AnimatedVisibility(
                 visible = downloadedOnlyMode,
-                enter = expandVertically(),
-                exit = shrinkVertically(),
+                enter = expandVertically(animationSpec = spring()),
+                exit = shrinkVertically(animationSpec = spring()),
             ) {
                 val top = (mainInsetsTop - indexingHeight).coerceAtLeast(0)
                 DownloadedOnlyModeBanner(
@@ -99,8 +103,8 @@ fun AppStateBanners(
         val incognitoPlaceable = subcompose(2) {
             AnimatedVisibility(
                 visible = incognitoMode,
-                enter = expandVertically(),
-                exit = shrinkVertically(),
+                enter = expandVertically(animationSpec = spring()),
+                exit = shrinkVertically(animationSpec = spring()),
             ) {
                 val top = (mainInsetsTop - indexingHeight - downloadedOnlyHeight).coerceAtLeast(0)
                 IncognitoModeBanner(
@@ -111,15 +115,9 @@ fun AppStateBanners(
         val incognitoHeight = incognitoPlaceable.fastMaxBy { it.height }?.height ?: 0
 
         layout(constraints.maxWidth, indexingHeight + downloadedOnlyHeight + incognitoHeight) {
-            indexingPlaceable.fastForEach {
-                it.place(0, 0)
-            }
-            downloadedOnlyPlaceable.fastForEach {
-                it.place(0, indexingHeight)
-            }
-            incognitoPlaceable.fastForEach {
-                it.place(0, indexingHeight + downloadedOnlyHeight)
-            }
+            indexingPlaceable.fastForEach { it.place(0, 0) }
+            downloadedOnlyPlaceable.fastForEach { it.place(0, indexingHeight) }
+            incognitoPlaceable.fastForEach { it.place(0, indexingHeight + downloadedOnlyHeight) }
         }
     }
 }
@@ -131,9 +129,10 @@ private fun DownloadedOnlyModeBanner(modifier: Modifier = Modifier) {
         modifier = Modifier
             .background(DownloadedOnlyBannerBackgroundColor)
             .fillMaxWidth()
-            .padding(4.dp)
+            .padding(horizontal = 16.dp, vertical = 6.dp)
             .then(modifier),
-        color = MaterialTheme.colorScheme.onTertiary,
+        // M3 Expressive: onTertiaryContainer lebih readable dari onTertiary
+        color = MaterialTheme.colorScheme.onTertiaryContainer,
         textAlign = TextAlign.Center,
         style = MaterialTheme.typography.labelMedium,
     )
@@ -146,9 +145,10 @@ private fun IncognitoModeBanner(modifier: Modifier = Modifier) {
         modifier = Modifier
             .background(IncognitoModeBannerBackgroundColor)
             .fillMaxWidth()
-            .padding(4.dp)
+            .padding(horizontal = 16.dp, vertical = 6.dp)
             .then(modifier),
-        color = MaterialTheme.colorScheme.onPrimary,
+        // M3 Expressive: onPrimaryContainer lebih readable dari onPrimary
+        color = MaterialTheme.colorScheme.onPrimaryContainer,
         textAlign = TextAlign.Center,
         style = MaterialTheme.typography.labelMedium,
     )
@@ -161,26 +161,26 @@ private fun IndexingDownloadBanner(modifier: Modifier = Modifier) {
         modifier = Modifier
             .background(color = IndexingBannerBackgroundColor)
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(horizontal = 16.dp, vertical = 8.dp)
             .then(modifier),
         horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         var textHeight by remember { mutableStateOf(0.dp) }
         CircularProgressIndicator(
             modifier = Modifier.requiredSize(textHeight),
-            color = MaterialTheme.colorScheme.onSecondary,
+            // M3 Expressive: onSecondaryContainer lebih readable
+            color = MaterialTheme.colorScheme.onSecondaryContainer,
             strokeWidth = textHeight / 8,
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
             text = stringResource(MR.strings.download_notifier_cache_renewal),
-            color = MaterialTheme.colorScheme.onSecondary,
+            color = MaterialTheme.colorScheme.onSecondaryContainer,
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.labelMedium,
             onTextLayout = {
-                with(density) {
-                    textHeight = it.size.height.toDp()
-                }
+                with(density) { textHeight = it.size.height.toDp() }
             },
         )
     }

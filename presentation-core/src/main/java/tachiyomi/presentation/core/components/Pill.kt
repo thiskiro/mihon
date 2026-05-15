@@ -18,20 +18,25 @@ import androidx.compose.ui.unit.dp
 fun Pill(
     text: String,
     modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colorScheme.surfaceContainerHigh,
-    contentColor: Color = MaterialTheme.colorScheme.onSurface,
+    // M3 Expressive: default warna lebih kontras
+    color: Color = MaterialTheme.colorScheme.secondaryContainer,
+    contentColor: Color = MaterialTheme.colorScheme.onSecondaryContainer,
     style: TextStyle = LocalTextStyle.current,
 ) {
     Surface(
         modifier = modifier
             .padding(start = 4.dp),
+        // M3 Expressive: extraLarge = pill shape penuh
         shape = MaterialTheme.shapes.extraLarge,
         color = color,
         contentColor = contentColor,
+        // M3 Expressive: sedikit elevasi untuk depth
+        tonalElevation = 1.dp,
     ) {
         Box(
             modifier = Modifier
-                .padding(6.dp, 1.dp),
+                // M3 Expressive: padding horizontal lebih lebar
+                .padding(horizontal = 8.dp, vertical = 2.dp),
             contentAlignment = Alignment.Center,
         ) {
             Text(
@@ -47,8 +52,8 @@ fun Pill(
 fun Pill(
     text: String,
     modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colorScheme.surfaceContainerHigh,
-    contentColor: Color = MaterialTheme.colorScheme.onSurface,
+    color: Color = MaterialTheme.colorScheme.secondaryContainer,
+    contentColor: Color = MaterialTheme.colorScheme.onSecondaryContainer,
     fontSize: TextUnit = LocalTextStyle.current.fontSize,
 ) {
     Pill(

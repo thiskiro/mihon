@@ -13,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.Placeholder
@@ -26,7 +25,8 @@ import kotlinx.collections.immutable.persistentMapOf
 @Composable
 fun BadgeGroup(
     modifier: Modifier = Modifier,
-    shape: Shape = MaterialTheme.shapes.extraSmall,
+    // M3 Expressive: extraSmall → small untuk sedikit lebih rounded
+    shape: Shape = MaterialTheme.shapes.small,
     content: @Composable RowScope.() -> Unit,
 ) {
     Row(modifier = modifier.clip(shape)) {
@@ -38,16 +38,17 @@ fun BadgeGroup(
 fun Badge(
     text: String,
     modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colorScheme.secondary,
-    textColor: Color = MaterialTheme.colorScheme.onSecondary,
-    shape: Shape = RectangleShape,
+    color: Color = MaterialTheme.colorScheme.secondaryContainer,
+    textColor: Color = MaterialTheme.colorScheme.onSecondaryContainer,
+    // M3 Expressive: tidak lagi RectangleShape, pakai extraSmall
+    shape: Shape = MaterialTheme.shapes.extraSmall,
 ) {
     Text(
         text = text,
         modifier = modifier
             .clip(shape)
             .background(color)
-            .padding(horizontal = 3.dp, vertical = 1.dp),
+            .padding(horizontal = 4.dp, vertical = 2.dp),
         color = textColor,
         fontWeight = FontWeight.Medium,
         maxLines = 1,
@@ -59,9 +60,9 @@ fun Badge(
 fun Badge(
     imageVector: ImageVector,
     modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colorScheme.secondary,
-    iconColor: Color = MaterialTheme.colorScheme.onSecondary,
-    shape: Shape = RectangleShape,
+    color: Color = MaterialTheme.colorScheme.secondaryContainer,
+    iconColor: Color = MaterialTheme.colorScheme.onSecondaryContainer,
+    shape: Shape = MaterialTheme.shapes.extraSmall,
 ) {
     val iconContentPlaceholder = "[icon]"
     val text = buildAnnotatedString {
@@ -92,7 +93,7 @@ fun Badge(
         modifier = modifier
             .clip(shape)
             .background(color)
-            .padding(horizontal = 3.dp, vertical = 1.dp),
+            .padding(horizontal = 4.dp, vertical = 2.dp),
         color = iconColor,
         fontWeight = FontWeight.Medium,
         maxLines = 1,
