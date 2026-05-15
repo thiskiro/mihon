@@ -26,6 +26,7 @@ fun RowScope.StatsOverviewItem(
 ) {
     BaseStatsItem(
         title = title,
+        // M3 Expressive: titleLarge lebih impactful
         titleStyle = MaterialTheme.typography.titleLarge,
         subtitle = subtitle,
         subtitleStyle = MaterialTheme.typography.bodyMedium,
@@ -63,18 +64,19 @@ private fun RowScope.BaseStatsItem(
     ) {
         Text(
             text = title,
-            style = titleStyle
-                .copy(fontWeight = FontWeight.Bold),
+            // M3 Expressive: SemiBold lebih expressive dari Bold
+            style = titleStyle.copy(
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface,
+            ),
             textAlign = TextAlign.Center,
             maxLines = 1,
         )
         Text(
             text = subtitle,
-            style = subtitleStyle
-                .copy(
-                    color = MaterialTheme.colorScheme.onSurface
-                        .copy(alpha = SECONDARY_ALPHA),
-                ),
+            style = subtitleStyle.copy(
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            ),
             textAlign = TextAlign.Center,
         )
         if (icon != null) {
@@ -82,6 +84,7 @@ private fun RowScope.BaseStatsItem(
             Icon(
                 imageVector = icon,
                 contentDescription = null,
+                // M3 Expressive: primary color untuk icon
                 tint = MaterialTheme.colorScheme.primary,
             )
         }
