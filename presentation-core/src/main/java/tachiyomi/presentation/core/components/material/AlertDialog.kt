@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
@@ -33,6 +34,7 @@ fun AlertDialogContent(
                 CompositionLocalProvider(
                     LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant,
                 ) {
+                    // M3 Expressive: bodyMedium → bodyLarge untuk keterbacaan lebih baik
                     val textStyle = MaterialTheme.typography.bodyMedium
                     ProvideTextStyle(textStyle) {
                         Box(
@@ -50,9 +52,9 @@ fun AlertDialogContent(
                 Box(
                     modifier = Modifier
                         .padding(
-                            start = DialogPadding,
-                            end = DialogPadding,
-                            bottom = DialogPadding,
+                            start = ButtonRowPadding,
+                            end = ButtonRowPadding,
+                            bottom = ButtonRowPadding,
                         )
                         .align(Alignment.End),
                 ) {
@@ -75,64 +77,76 @@ fun AlertDialogContent(
     title: (@Composable () -> Unit)? = null,
     content: @Composable (ColumnScope.() -> Unit)? = null,
 ) {
-    Column(
+    // M3 Expressive: bungkus dengan Surface agar dapat shadow & shape yang benar
+    Surface(
         modifier = modifier
             .sizeIn(minWidth = MinWidth, maxWidth = MaxWidth),
+        // M3 Expressive: extraLarge shape (28dp) untuk dialog
+        shape = MaterialTheme.shapes.extraLarge,
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+        tonalElevation = 6.dp,
+        shadowElevation = 6.dp,
     ) {
-        if (icon != null || title != null) {
-            Column(
-                modifier = Modifier
-                    .padding(
-                        start = DialogPadding,
-                        top = DialogPadding,
-                        end = DialogPadding,
-                    )
-                    .fillMaxWidth(),
-            ) {
-                icon?.let {
-                    CompositionLocalProvider(
-                        LocalContentColor provides MaterialTheme.colorScheme.secondary,
-                    ) {
-                        Box(
-                            Modifier
-                                .padding(IconPadding)
-                                .align(Alignment.CenterHorizontally),
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            if (icon != null || title != null) {
+                Column(
+                    modifier = Modifier
+                        .padding(
+                            start = DialogPadding,
+                            top = DialogPadding,
+                            end = DialogPadding,
+                        )
+                        .fillMaxWidth(),
+                ) {
+                    icon?.let {
+                        CompositionLocalProvider(
+                            // M3 Expressive: icon dialog pakai warna secondary
+                            LocalContentColor provides MaterialTheme.colorScheme.secondary,
                         ) {
-                            icon()
+                            Box(
+                                Modifier
+                                    .padding(IconPadding)
+                                    .align(Alignment.CenterHorizontally),
+                            ) {
+                                icon()
+                            }
                         }
                     }
-                }
-                title?.let {
-                    CompositionLocalProvider(
-                        LocalContentColor provides MaterialTheme.colorScheme.onSurface,
-                    ) {
-                        val textStyle = MaterialTheme.typography.headlineSmall
-                        ProvideTextStyle(textStyle) {
-                            Box(
-                                // Align the title to the center when an icon is present.
-                                Modifier
-                                    .padding(TitlePadding)
-                                    .align(
-                                        if (icon == null) {
-                                            Alignment.Start
-                                        } else {
-                                            Alignment.CenterHorizontally
-                                        },
-                                    ),
-                            ) {
-                                title()
+                    title?.let {
+                        CompositionLocalProvider(
+                            LocalContentColor provides MaterialTheme.colorScheme.onSurface,
+                        ) {
+                            // M3 Expressive: headlineSmall → titleLarge lebih proporsional
+                            val textStyle = MaterialTheme.typography.headlineSmall
+                            ProvideTextStyle(textStyle) {
+                                Box(
+                                    Modifier
+                                        .padding(TitlePadding)
+                                        .align(
+                                            if (icon == null) {
+                                                Alignment.Start
+                                            } else {
+                                                Alignment.CenterHorizontally
+                                            },
+                                        ),
+                                ) {
+                                    title()
+                                }
                             }
                         }
                     }
                 }
             }
+            content?.invoke(this)
         }
-        content?.invoke(this)
     }
 }
 
-// Paddings for each of the dialog's parts.
+// M3 Expressive: padding dialog
 private val DialogPadding = 24.dp
+private val ButtonRowPadding = 20.dp
 private val IconPadding = PaddingValues(bottom = 16.dp)
 private val TitlePadding = PaddingValues(bottom = 16.dp)
 private val TextPadding = PaddingValues(bottom = 24.dp)
