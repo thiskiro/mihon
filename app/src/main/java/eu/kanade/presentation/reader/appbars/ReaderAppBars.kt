@@ -18,10 +18,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import eu.kanade.presentation.reader.components.ChapterNavigator
@@ -33,6 +35,12 @@ import tachiyomi.presentation.core.components.material.padding
 
 private val readerBarsSlideAnimationSpec = tween<IntOffset>(200)
 private val readerBarsFadeAnimationSpec = tween<Float>(150)
+
+// M3 Expressive: rounded corners untuk top bar (bawah melengkung)
+private val TopBarShape = RoundedCornerShape(bottomStart = 28.dp, bottomEnd = 28.dp)
+
+// M3 Expressive: rounded corners untuk bottom bar (atas melengkung)
+private val BottomBarShape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)
 
 @Composable
 fun ReaderAppBars(
@@ -80,6 +88,8 @@ fun ReaderAppBars(
         ) {
             ReaderTopBar(
                 modifier = Modifier
+                    // M3 Expressive: clip dengan rounded bottom corners
+                    .clip(TopBarShape)
                     .background(backgroundColor)
                     .clickable(onClick = onClickTopAppBar),
                 mangaTitle = mangaTitle,
@@ -116,6 +126,8 @@ fun ReaderAppBars(
                 ReaderBottomBar(
                     modifier = Modifier
                         .fillMaxWidth()
+                        // M3 Expressive: clip dengan rounded top corners
+                        .clip(BottomBarShape)
                         .background(backgroundColor)
                         .padding(horizontal = MaterialTheme.padding.small)
                         .windowInsetsPadding(WindowInsets.navigationBars),
