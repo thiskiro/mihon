@@ -15,6 +15,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import okio.Path.Companion.toOkioPath
 import coil3.ImageLoader
 import coil3.SingletonImageLoader
 import coil3.memory.MemoryCache
@@ -214,7 +215,7 @@ class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factor
                 coil3.disk.DiskCache.Builder()
                     // Optimasi: disk cache 512MB untuk cover manga
                     .maxSizeBytes(512L * 1024 * 1024)
-                    .directory(context.cacheDir.resolve("image_cache"))
+                    .directory(context.cacheDir.resolve("image_cache").toOkioPath())
                     .build(),
             )
 
