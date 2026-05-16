@@ -205,17 +205,30 @@ class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factor
 
             memoryCache(
                 MemoryCache.Builder()
-                    .maxSizePercent(context)
+                    // Optimasi: naikkan memory cache ke 30% RAM
+                    .maxSizePercent(context, 0.30)
+                    .build(),
+            )
+
+            diskCache(
+                coil3.disk.DiskCache.Builder()
+                    // Optimasi: disk cache 512MB untuk cover manga
+                    .maxSizeBytes(512L * 1024 * 1024)
+                    .directory(context.cacheDir.resolve("image_cache"))
                     .build(),
             )
 
             crossfade((300 * this@App.animatorDurationScale).toInt())
+            // Kualitas: gunakan ARGB_8888 untuk kualitas gambar terbaik
+            // hanya fallback ke RGB_565 di device RAM rendah
             allowRgb565(DeviceUtil.isLowRamDevice(this@App))
+            // Kualitas: presisi warna tinggi
+            precision(coil3.size.Precision.EXACT)
             if (networkPreferences.verboseLogging.get()) logger(DebugLogger())
 
-            // Coil spawns a new thread for every image load by default
-            fetcherCoroutineContext(Dispatchers.IO.limitedParallelism(8))
-            decoderCoroutineContext(Dispatchers.IO.limitedParallelism(3))
+            // Optimasi: naikkan parallelism untuk loading lebih cepat
+            fetcherCoroutineContext(Dispatchers.IO.limitedParallelism(16))
+            decoderCoroutineContext(Dispatchers.IO.limitedParallelism(6))
         }
             .build()
     }
