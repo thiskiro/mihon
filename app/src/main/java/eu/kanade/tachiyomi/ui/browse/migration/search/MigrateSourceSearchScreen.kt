@@ -2,8 +2,8 @@ package eu.kanade.tachiyomi.ui.browse.migration.search
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.FilterList
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.SmallExtendedFloatingActionButton
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -75,7 +75,7 @@ data class MigrateSourceSearchScreen(
                 )
             },
             floatingActionButton = {
-                SmallExtendedFloatingActionButton(
+                ExtendedFloatingActionButton(
                     text = { Text(text = stringResource(MR.strings.action_filter)) },
                     icon = { Icon(Icons.Outlined.FilterList, contentDescription = null) },
                     onClick = screenModel::openFilterSheet,
