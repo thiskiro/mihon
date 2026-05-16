@@ -220,6 +220,7 @@ dependencies {
 
     // Job scheduling
     implementation(libs.androidx.work)
+    implementation(libs.androidx.webkit)
 
     // RxJava
     implementation(libs.rxJava)
