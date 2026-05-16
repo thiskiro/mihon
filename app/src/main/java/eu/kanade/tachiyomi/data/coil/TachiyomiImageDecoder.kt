@@ -32,18 +32,31 @@ class TachiyomiImageDecoder(private val resources: ImageSource, private val opti
         val dstWidth = options.size.widthPx(options.scale) { srcWidth }
         val dstHeight = options.size.heightPx(options.scale) { srcHeight }
 
+        // Kualitas: gunakan sampleSize = 1 untuk kualitas penuh
+        // hanya downsample jika gambar sangat besar (>4x ukuran target)
         val sampleSize = DecodeUtils.calculateInSampleSize(
             srcWidth = srcWidth,
             srcHeight = srcHeight,
-            dstWidth = dstWidth,
-            dstHeight = dstHeight,
+            dstWidth = dstWidth * 2,
+            dstHeight = dstHeight * 2,
             scale = options.scale,
-        )
+        ).coerceAtLeast(1)
 
         var bitmap = decoder.decode(sampleSize = sampleSize)
         decoder.recycle()
 
         check(bitmap != null) { "Failed to decode image" }
+
+        // Kualitas: pastikan bitmap config ARGB_8888 untuk warna terbaik
+        if (bitmap.config != Bitmap.Config.ARGB_8888 &&
+            bitmap.config != Bitmap.Config.HARDWARE
+        ) {
+            val newBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, false)
+            if (newBitmap != null) {
+                bitmap.recycle()
+                bitmap = newBitmap
+            }
+        }
 
         if (options.bitmapConfig == Bitmap.Config.HARDWARE && ImageUtil.canUseHardwareBitmap(bitmap)) {
             val hwBitmap = bitmap.copy(Bitmap.Config.HARDWARE, false)
